@@ -134,22 +134,45 @@ def process_user(user, action):
                 # 4. Sign Out
                 print("  Signing out...")
                 try:
-                    if page.is_visible("#sign_out_session"):
-                        page.click("#sign_out_session")
-                    else:
-                        if page.is_visible(".user-profile"): 
-                            page.click(".user-profile")
-                            page.wait_for_timeout(500)
-                        elif page.is_visible(".user-avatar"):
-                            page.click(".user-avatar")
-                            page.wait_for_timeout(500)
-                            
-                        if page.is_visible("#sign_out_session"): 
-                            page.click("#sign_out_session")
-                        elif page.is_visible("text=Sign Out"):
-                            page.click("text=Sign Out")
+                    # 1. Try direct link if visible (unlikely)
+                    if page.is_visible("a[href*='sign_out']"):
+                         page.click("a[href*='sign_out']")
                     
-                    page.wait_for_url("**/sign_in", timeout=5000)
+                    # 2. Try toggling the menu
+                    else:
+                        # Selectors for the profile icon/avatar in the top right
+                        # Based on screenshot: likely a .dropdown-toggle or .user-avatar
+                        profile_selectors = [
+                            ".user-profile", 
+                            ".user-avatar", 
+                            ".dropdown-toggle", 
+                            "img.img-circle", 
+                            "header .avatar",
+                            "li.dropdown > a",
+                            "div.profile-user"
+                        ]
+                        
+                        menu_opened = False
+                        for selector in profile_selectors:
+                            if page.is_visible(selector):
+                                # Only click if we haven't found the menu yet
+                                if not page.is_visible("text=Sign Out"):
+                                    print(f"    Clicking profile icon: {selector}")
+                                    page.click(selector)
+                                    page.wait_for_timeout(1000) # Wait for animation
+                                
+                                if page.is_visible("text=Sign Out"):
+                                    menu_opened = True
+                                    break
+                        
+                        if menu_opened or page.is_visible("text=Sign Out"):
+                            print("    Clicking 'Sign Out'...")
+                            page.click("text=Sign Out")
+                        else:
+                            print("    Could not find 'Sign Out' button or profile menu.")
+                    
+                    # 3. Wait for redirect
+                    page.wait_for_url("**/sign_in", timeout=10000)
                     print("  Signed out successfully.")
                 except Exception as e:
                     print(f"  Warning: Failed to sign out: {e}")
