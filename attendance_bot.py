@@ -106,7 +106,11 @@ def process_user(user, action):
                 # 3. Handle Modal
                 print("  Waiting for 'My Attendance' modal...")
                 try:
-                    page.wait_for_selector("text=My Attendance", timeout=5000)
+                    # The log showed "locator resolved to 3 elements", likely including sidebar links.
+                    # We need to be more specific to the MODAL title.
+                    # Trying common bootstrap modal title classes or specific text structure.
+                    # We will try to find the text "My Attendance" that is visible and likely a heading.
+                    page.wait_for_selector("h4:has-text('My Attendance'), h5:has-text('My Attendance'), div.modal-header:has-text('My Attendance')", timeout=5000)
                     print("  Modal 'My Attendance' detected.")
                     
                     modal_btn_selector = "div.modal-content button:has-text('Mark Attendance')"
@@ -116,6 +120,10 @@ def process_user(user, action):
                         page.wait_for_timeout(3000)
                         print("  Clicked confirmation.")
                     else:
+                        # Fallback
+                        print("  Specific modal button not found. searching for any visible 'Mark Attendance' button...")
+                        # We need to avoid clicking the dashboard button again.
+                        # The modal button should be the one that is visible.
                         page.click("button:has-text('Mark Attendance')")
                         page.wait_for_timeout(3000)
 
