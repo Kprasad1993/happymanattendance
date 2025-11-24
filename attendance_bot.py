@@ -195,6 +195,10 @@ def run_attendance_bot(action=None):
 
     print(f"Starting Attendance Bot for {len(users)} users. Action: {action}")
     
+    # Log loaded users (emails only) for verification
+    loaded_emails = [u.get('email', 'Unknown') for u in users]
+    print(f"Loaded users: {', '.join(loaded_emails)}")
+    
     failures = []
     for user in users:
         success = process_user(user, action)
