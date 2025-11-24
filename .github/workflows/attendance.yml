@@ -37,4 +37,5 @@ jobs:
           HRMS_ACCOUNTS: ${{ secrets.HRMS_ACCOUNTS }}
           HOLIDAYS: ${{ secrets.HOLIDAYS }}
           NOTIFICATION_WEBHOOK: ${{ secrets.NOTIFICATION_WEBHOOK }}
+          PYTHONUNBUFFERED: 1
         run: python attendance_bot.py ${{ inputs.action }}
