@@ -34,5 +34,7 @@ jobs:
         env:
           HRMS_EMAIL: ${{ secrets.HRMS_EMAIL }}
           HRMS_PASSWORD: ${{ secrets.HRMS_PASSWORD }}
+          HRMS_ACCOUNTS: ${{ secrets.HRMS_ACCOUNTS }}
+          HOLIDAYS: ${{ secrets.HOLIDAYS }}
           NOTIFICATION_WEBHOOK: ${{ secrets.NOTIFICATION_WEBHOOK }}
         run: python attendance_bot.py ${{ inputs.action }}
