@@ -2,8 +2,8 @@ name: Daily Attendance
 
 on:
   schedule:
-    # 9:00 AM IST = 3:30 AM UTC
-    - cron: '30 3 * * *'
+    # 8:30 AM IST = 3:00 AM UTC
+    - cron: '0 3 * * *'
     # 6:30 PM IST = 1:00 PM UTC
     - cron: '0 13 * * *'
   workflow_dispatch:
